@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var connectionString = builder.Configuration.GetConnectionString("UserConnection");
 
 builder.Services.AddDbContext<UserDbContext>(opts =>
