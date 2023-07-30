@@ -17,7 +17,7 @@ public class RegisterService
 
     }
 
-    public async Task Register(CreateUserDto userDto)
+    public async Task Execute(CreateUserDto userDto)
     {
         var user = _mapper.Map<User>(userDto);
         var result = await _userManager.CreateAsync(user, userDto.Password);
