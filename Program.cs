@@ -1,8 +1,13 @@
+using dotnet_auth.Authorization;
 using dotnet_auth.Data;
 using dotnet_auth.Models;
 using dotnet_auth.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,10 +36,32 @@ builder.Services.AddScoped<TokenService>();
  AddTranslent - sempre uma instancia nova, mesmo que seja na mesma req
 */
 
+builder.Services.AddSingleton<IAuthorizationHandler, AgeAuthorization>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ODN1088da9s0D821d0s97B2092asskFF")), 
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        ClockSkew = TimeSpan.Zero
+    }
+    ;
+});
+
+builder.Services.AddAuthorization(opts =>
+{
+    opts.AddPolicy("MinimumAge", policy => policy.AddRequirements(new MinimumAge(18)));
+});
 
 var app = builder.Build();
 
@@ -46,6 +73,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
