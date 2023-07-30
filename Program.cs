@@ -22,7 +22,8 @@ builder.Services
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddScoped<RegisterService>(); 
+builder.Services.AddScoped<RegisterService>();
+builder.Services.AddScoped<LoginService>();
 /*
  AddScoped - chamei uma req nova, vou instanciar um novo
  AddSigleton - um unico registerService para cada req que chegasse, ou seja, a mesma instancia
