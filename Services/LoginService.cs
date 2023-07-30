@@ -7,17 +7,16 @@ namespace dotnet_auth.Services;
 
 public class LoginService
 {
-    private IMapper _mapper;
     private SignInManager<User> _signInManager;
+    private TokenService _tokenService;
 
-    public LoginService(SignInManager<User> signInManager, IMapper mapper)
+    public LoginService(SignInManager<User> signInManager, TokenService tokenService)
     {
         _signInManager = signInManager;
-        _mapper = mapper;
-
+        _tokenService = tokenService;
     }
     
-    public async Task Execute(LoginUserDto dto)
+    public async Task<string> Execute(LoginUserDto dto)
     {
         var result = await _signInManager
             .PasswordSignInAsync(dto.Username, dto.Password, false, false); 
@@ -27,5 +26,15 @@ public class LoginService
         {
             throw new ApplicationException("Unauthenticated user");
         }
+
+        var user = _signInManager
+            .UserManager
+            .Users
+            .FirstOrDefault
+                (user => user.NormalizedUserName == dto.Username.ToUpper());
+
+        var token = _tokenService.Execute(user);
+
+        return token;
     }
 }
