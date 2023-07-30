@@ -13,7 +13,8 @@ public class TokenService
         var claims = new Claim[]
         {
             new Claim("username", user.UserName),
-            new Claim("id", user.Id)
+            new Claim("id", user.Id),
+            new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString())
         };
 
         var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ODN1088da9s0D821d0s97B2092asskFF"));
