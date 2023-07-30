@@ -6,11 +6,11 @@ namespace dotnet_auth.Controllers;
 
 [ApiController]
 [Route("[Controller]")]
-public class UserController : ControllerBase
+public class UserRegisterController : ControllerBase
 {
     private RegisterService _registerService;
 
-    public UserController(RegisterService registerService)
+    public UserRegisterController(RegisterService registerService)
     {
         _registerService = registerService;
     }
