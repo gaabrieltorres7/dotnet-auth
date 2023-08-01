@@ -8,6 +8,12 @@ namespace dotnet_auth.Services;
 
 public class TokenService
 {
+    public IConfiguration _configuration { get; set; }
+
+    public TokenService(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
     public string Execute(User user)
     {
         var claims = new Claim[]
@@ -17,7 +23,7 @@ public class TokenService
             new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString())
         };
 
-        var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ODN1088da9s0D821d0s97B2092asskFF"));
+        var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SymmetricSecurityKey"]));
 
         var signInCredentials = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
         
